@@ -1,0 +1,32 @@
+{% load static %}
+<nav class="navbar navbar-light navbar-expand-lg navigation-clean-button bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+            <div class="navbar-brand mx-auto">
+                <a href="/">
+                    <img src="{% static 'img/logo.png' %}" style="width: 127px;" alt="logo">
+                </a>
+            </div>
+            <button class="navbar-toggler position-absolute" style="right:1.5em" type="button" data-bs-toggle="collapse" data-bs-target="#navcol-1" aria-controls="navcol-1" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'game:game' %}">Play</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_anonymous %}
+                    <li class="nav-item"><a class="btn btn-primary me-2" href="{% url 'users:signup' %}">Signup</a></li>
+                    <li class="nav-item my-auto"><a class="btn btn-sm btn-secondary " href="{% url 'login' %}">Login</a></li>
+                    {% else %}
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-primary" type="submit">Log out</button>
+                        </form>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+</nav>

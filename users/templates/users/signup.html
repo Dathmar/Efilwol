@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% block page_title %}Signup{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <div class="row">
+            <h1>Enter your email below to create a new account.</h1>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12 pt-2">
+                    <div class="form-floating">
+                        <input class="form-control" type="email" placeholder="{{ form.email.label }}" name="{{ form.email.name }}" autofocus="" autocapitalize="none" autocomplete="email" maxlength="254" required="" id="{{ form.email.id_for_label }}">
+                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    </div>
+                </div>
+            </div>
+            {% if form.errors %}
+            <div class="row pt-2">
+                <div class="col-12 text-danger">
+                    {{ form.errors|safe }}
+                </div>
+            </div>
+            <div class="col-12 col-md-6 offset-md-3 pt-2">
+                <input type="submit" class="btn btn-primary pt-2" value="Submit">
+            </div>
+            {% endif %}
+
+        </form>
+    </div>
+{% endblock %}

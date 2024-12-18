@@ -1,0 +1,38 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block page_title %}Play{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <h1>Enemies</h1>
+                <div class="row row-cols-3">
+                    {% for enemy_script in enemy_scripts %}
+                        {% include 'game/script-card.html' with script_obj=enemy_script type='enemy' %}
+                    {% endfor %}
+                </div>
+                <h1>Scripts</h1>
+                <div class="row row-cols-3">
+                    {% for party_script in party_scripts %}
+                        {% if forloop.counter0 == 4 %}
+                        {% include 'game/script-card.html' with script_obj=lowlife type='lowlife' %}
+                        {% endif %}
+                        {% include 'game/script-card.html' with script_obj=party_script type='player' %}
+                    {% endfor %}
+                </div>
+        </div>
+        <div class="col-4 h-100">
+            <h1>Battle Log</h1>
+            <div id="id_attack_log" style="height: 50vh; overflow-y: auto;">
+                <p>Start battle</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+{% block end_body %}
+    <script src="{% static 'js/transition.min.js' %}"></script>
+    <script src="{% static 'js/game_loop.js' %}"></script>
+{% endblock %}

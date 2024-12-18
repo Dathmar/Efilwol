@@ -1,0 +1,43 @@
+{% load static %}
+{% load tz %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{% if og_title %}{{ og_title }}{% else %}Elifwol{% endif %}" />
+    <meta property="og:description" content="{% if og_description %}{{ og_description }}{% else %}This isn't just a copy of Lowlife the game for iOS{% endif %}" />
+    <meta property="og:url" content="https://elifwol.com/" />
+    <meta property="og:image" content="{% if og_image %}{{ og_image }}{% else %}https://elifwol.com/logo.png{% endif %}" />
+
+    <title>{% block page_title %}{% endblock %} | Elifwol</title>
+
+    {% block start_styles %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles_v1.0.0.1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fadestyles.css' %}">
+
+    <script src="{% static 'js/sorttable.js' %}"></script>
+    {% block extra_header %}{% endblock %}
+</head>
+
+<body style="overflow-x: hidden;">
+
+    {% include 'base/navbar.html' %}
+    {% timezone "US/Central" %}
+    {% block content %}{% endblock %}
+    {% endtimezone %}
+    {% include 'base/footer.html' %}
+
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script>load_fadein();</script>
+    {% block end_body %}{% endblock %}
+</body>
+
+</html>
