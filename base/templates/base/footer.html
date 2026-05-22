@@ -1,11 +1,5 @@
 {% load static %}
-<section id="footer" class="py-4">
-
-    <div class="row text-center">
-
-        <img class="mx-auto fade-in" style="width: 127px; height: auto;" src="{% static 'img/logo.png' %}">
-    </div>
-    <div class="row text-center">
-        <span class="fw-bold fade-in" style="font-size: small">All Rights Reserved Dathmar {% now 'Y' %} </span>
-    </div>
+<section id="footer" class="py-4 text-center text-sm text-base-content/60">
+    <img class="mx-auto fade-in mb-2" style="width: 127px; height: auto;" src="{% static 'img/logo.png' %}">
+    <span class="font-bold fade-in">All Rights Reserved Dathmar {% now 'Y' %}</span>
 </section>
