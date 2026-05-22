@@ -25,13 +25,13 @@ Efilwol/settings.py.backup
 logs/*
 !logs/.gitkeep
 
-# Environment files (keep .env.example)
+# Environment files (keep .env.example only — never commit real env files)
 .env
 .env.local
+.env.development
+.env.production
 .env.*.local
 !.env.example
-!.env.development
-!.env.production
 
 # Node.js
 node_modules/
@@ -43,6 +43,19 @@ yarn.lock
 
 # Tailwind CSS
 base/static/css/output.css
+
+# Vendored static libraries — install via npm/CDN, don't commit
+base/static/bootstrap/
+
+# Font files — large binaries, serve via CDN or npm in production
+# Remove this line if you want fonts tracked in git
+base/static/fonts/
+
+# Client/business documents — not source code
+base/static/assets/*.pdf
+
+# Scratch / ad-hoc files
+docs/scratch/
 
 # IDE
 .vscode/
