@@ -3,36 +3,152 @@
 {% block page_title %}Play{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-8">
-            <h1>Enemies</h1>
-                <div class="row row-cols-3">
+<div class="container mx-auto px-4 py-8" 
+     x-data="gameController"
+     x-init="init()">
+
+    <!-- Demo banner -->
+    {% if is_demo and not user.is_authenticated %}
+    <div class="alert alert-info mb-4 flex-wrap gap-2">
+        <span>🎮 You're playing the <strong>demo</strong>. Progress won't be saved.</span>
+        <div class="flex gap-2 ml-auto">
+            <a href="{% url 'users:signup' %}" class="btn btn-primary btn-xs">Create Account</a>
+            <a href="{% url 'login' %}" class="btn btn-ghost btn-xs">Login</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Stage title -->
+    <div class="flex items-center gap-3 mb-6">
+        <a href="{% url 'game:index' %}" class="btn btn-ghost btn-sm">← Stages</a>
+        <h1 class="text-2xl font-bold">{{ stage.name }}</h1>
+        {% if stage.is_demo %}<span class="badge badge-accent">Demo</span>{% endif %}
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Main Game Area (Left Side - 2 columns) -->
+        <div class="lg:col-span-2 space-y-8">
+            
+            <!-- Enemies Section -->
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <h2 class="text-3xl font-bold text-error">Enemies</h2>
+                    <div class="badge badge-error badge-lg" x-text="`${aliveEnemies} alive`"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {% for enemy_script in enemy_scripts %}
-                        {% include 'game/script-card.html' with script_obj=enemy_script type='enemy' %}
+                        {% include 'game/script-card.html' with script_obj=enemy_script hp=enemy_script.hp type='enemy' %}
                     {% endfor %}
                 </div>
-                <h1>Scripts</h1>
-                <div class="row row-cols-3">
+            </div>
+            
+            <!-- Player Party Section -->
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <h2 class="text-3xl font-bold text-success">Your Party</h2>
+                    <div class="badge badge-success badge-lg" x-text="`${aliveParty} alive`"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {% for party_script in party_scripts %}
                         {% if forloop.counter0 == 4 %}
-                        {% include 'game/script-card.html' with script_obj=lowlife type='lowlife' %}
+                            {% include 'game/script-card.html' with script_obj=lowlife hp=lowlife.hp type='lowlife' %}
                         {% endif %}
-                        {% include 'game/script-card.html' with script_obj=party_script type='player' %}
+                        {% include 'game/script-card.html' with script_obj=party_script.script hp=party_script.hp type='player' %}
                     {% endfor %}
                 </div>
+            </div>
+            
+            <!-- Heal Buttons -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Healing Spells
+                    </h3>
+                    <div class="flex flex-wrap gap-3 mt-4">
+                        {% for heal in healz %}
+                            {% include 'game/heal-card.html' %}
+                        {% endfor %}
+                        <!-- Abort: always visible, enabled only while casting -->
+                        <button class="btn btn-error gap-2"
+                                :class="{ 'btn-disabled': !isCasting }"
+                                :disabled="!isCasting"
+                                @click="abortCast()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Abort
+                        </button>
+                    </div>
+
+                    <div x-show="selectedTarget" class="alert alert-info mt-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Target: <strong x-text="selectedTarget"></strong>
+                            <span x-show="isCasting" class="text-warning ml-2">(casting…)</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-4 h-100">
-            <h1>Battle Log</h1>
-            <div id="id_attack_log" style="height: 50vh; overflow-y: auto;">
-                <p>Start battle</p>
+        
+        <!-- Battle Log (Right Side - 1 column) -->
+        <div class="lg:col-span-1">
+            <div class="sticky top-4">
+                <div class="card bg-base-200 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Battle Log
+                        </h2>
+                        
+                        <!-- Game Status -->
+                        <div x-show="gameStatus" class="alert" 
+                             :class="{
+                                 'alert-success': gameStatus === 'victory',
+                                 'alert-error': gameStatus === 'defeat'
+                             }">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span x-text="gameStatus === 'victory' ? 'Victory! You Won!' : 'Defeat! You Lost!'"></span>
+                            <button x-show="gameStatus === 'victory'"
+                                    class="btn btn-success btn-sm ml-auto"
+                                    @click="window.location.reload()">
+                                ↺ Play Again
+                            </button>
+                        </div>
+                        
+                        <!-- Battle Log Entries -->
+                        <div class="battle-log space-y-2 mt-4" id="battle-log">
+                            <template x-for="(log, index) in battleLogs" :key="index">
+                                <div class="log-entry flex items-start gap-3 p-3 bg-base-300 rounded-lg">
+                                    <div class="text-xs text-base-content/60 min-w-[60px] shrink-0" x-text="log.time"></div>
+                                    <div class="flex-1 text-sm" x-text="log.message"></div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 {% endblock %}
+
 {% block end_body %}
-    <script src="{% static 'js/transition.min.js' %}"></script>
-    <script src="{% static 'js/game_loop.js' %}"></script>
+<script>
+    const GAME_CONFIG = {
+        gameId: "{{ game_id }}",
+        gameHash: "{{ game_hash }}",
+        confirmCastCancel: {{ confirm_cast_cancel|yesno:"true,false" }}
+    };
+</script>
+<script src="{% static 'js/game_controller.js' %}"></script>
 {% endblock %}

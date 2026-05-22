@@ -12,7 +12,7 @@ def send_password_reset(user, token):
 		"https://api.mailgun.net/v3/mg.efilwol.com/messages",
 		auth=("api", f"{api_key}"),
 		data={"from": "Mailgun Sandbox <postmaster@mg.efilwol.com>",
-			"to": "Asher Danner <asher.danner@gmail.com>",
+			"to": f"{user.email}",
 			"subject": "Your Password Reset Request",
 			"template": "password reset",
 			"h:X-Mailgun-Variables": f"{json.dumps(data)}"})

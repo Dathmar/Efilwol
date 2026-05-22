@@ -25,4 +25,5 @@ urlpatterns = [
     path('', include('users.urls', namespace='users')),
     path('', include('game.urls', namespace='game')),
     path('scripts/', include('script.urls', namespace='script')),
+    path('api/v1/', include('api.urls', namespace='api')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

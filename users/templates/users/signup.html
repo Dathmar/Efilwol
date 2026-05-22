@@ -1,32 +1,140 @@
 {% extends 'base/base.html' %}
-{% block page_title %}Signup{% endblock %}
+{% load static %}
+{% block page_title %}Sign Up{% endblock %}
 
 {% block content %}
-    <div class="container py-4">
-        <div class="row">
-            <h1>Enter your email below to create a new account.</h1>
+<div class="hero min-h-screen bg-gradient-to-br from-base-100 via-base-200 to-base-300">
+    <div class="hero-content flex-col lg:flex-row max-w-6xl w-full">
+        
+        <!-- Left Side - Signup Form -->
+        <div class="card flex-shrink-0 w-full max-w-md shadow-2xl bg-base-200 lg:w-1/2">
+            <form method="POST" class="card-body">
+                {% csrf_token %}
+                
+                <h2 class="card-title text-2xl mb-4">Create Your Account</h2>
+                <p class="text-sm text-base-content/70 mb-4">
+                    Enter your email below to create a new account and start your adventure!
+                </p>
+                
+                <!-- Error Messages -->
+                {% if form.errors %}
+                <div class="alert alert-error mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Email Field -->
+                <div class="form-control">
+                    <label class="label" for="{{ form.email.id_for_label }}">
+                        <span class="label-text">{{ form.email.label }}</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                            </svg>
+                        </div>
+                        <input 
+                            type="email" 
+                            name="{{ form.email.name }}" 
+                            id="{{ form.email.id_for_label }}"
+                            placeholder="your.email@example.com" 
+                            class="input input-bordered w-full pl-10" 
+                            autocomplete="email"
+                            autocapitalize="none"
+                            maxlength="254"
+                            required 
+                            autofocus
+                        />
+                    </div>
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/60">
+                            We'll send you a confirmation email
+                        </span>
+                    </label>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="form-control mt-6">
+                    <button type="submit" class="btn btn-primary btn-lg gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        Create Account
+                    </button>
+                </div>
+                
+                <!-- Login Link -->
+                <div class="divider">OR</div>
+                <div class="text-center">
+                    <p class="text-sm">
+                        Already have an account? 
+                        <a href="{% url 'login' %}" class="link link-primary font-semibold">
+                            Log in
+                        </a>
+                    </p>
+                </div>
+            </form>
         </div>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-12 pt-2">
-                    <div class="form-floating">
-                        <input class="form-control" type="email" placeholder="{{ form.email.label }}" name="{{ form.email.name }}" autofocus="" autocapitalize="none" autocomplete="email" maxlength="254" required="" id="{{ form.email.id_for_label }}">
-                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+        
+        <!-- Right Side - Branding -->
+        <div class="text-center lg:text-left lg:w-1/2 p-8">
+            <div class="mb-8">
+                <img src="{% static 'img/logo.png' %}" alt="Elifwol Logo" class="mx-auto lg:mx-0 w-48 drop-shadow-2xl animate-pulse-slow">
+            </div>
+            <h1 class="text-5xl font-bold mb-4">Join Elifwol!</h1>
+            <p class="text-xl mb-6">
+                Create your account and start your epic adventure today.
+            </p>
+            
+            <!-- Features -->
+            <div class="space-y-4">
+                <div class="card bg-base-300 shadow-lg">
+                    <div class="card-body p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="text-3xl">⚔️</div>
+                            <div>
+                                <h3 class="font-bold">Epic Battles</h3>
+                                <p class="text-sm text-base-content/70">Fight challenging enemies</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-base-300 shadow-lg">
+                    <div class="card-body p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="text-3xl">👥</div>
+                            <div>
+                                <h3 class="font-bold">Build Your Party</h3>
+                                <p class="text-sm text-base-content/70">Recruit powerful allies</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-base-300 shadow-lg">
+                    <div class="card-body p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="text-3xl">🎮</div>
+                            <div>
+                                <h3 class="font-bold">Real-Time Action</h3>
+                                <p class="text-sm text-base-content/70">Dynamic combat system</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            {% if form.errors %}
-            <div class="row pt-2">
-                <div class="col-12 text-danger">
-                    {{ form.errors|safe }}
-                </div>
-            </div>
-            <div class="col-12 col-md-6 offset-md-3 pt-2">
-                <input type="submit" class="btn btn-primary pt-2" value="Submit">
-            </div>
-            {% endif %}
-
-        </form>
+        </div>
     </div>
+</div>
 {% endblock %}

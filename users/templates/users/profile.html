@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+{% block page_title %}Profile{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-start justify-center pt-16 px-4">
+    <div class="w-full max-w-lg space-y-6">
+
+        <!-- Header -->
+        <div>
+            <h1 class="text-3xl font-bold">Profile</h1>
+            <p class="text-base-content/60 mt-1">{{ user.email }}</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Game Preferences -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title text-lg mb-4">Game Preferences</h2>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- confirm_cast_cancel -->
+                    <div class="form-control">
+                        <label class="label cursor-pointer justify-start gap-4">
+                            <input type="checkbox"
+                                   name="confirm_cast_cancel"
+                                   class="checkbox checkbox-primary"
+                                   {% if prefs.confirm_cast_cancel %}checked{% endif %}>
+                            <div>
+                                <span class="label-text font-medium">
+                                    Confirm before cancelling a cast
+                                </span>
+                                <!-- Tooltip -->
+                                <div class="tooltip tooltip-right"
+                                     data-tip="When enabled, clicking a new heal target while casting shows an Abort button instead of immediately cancelling. Useful if you want to avoid accidental interruptions.">
+                                    <span class="ml-2 text-base-content/40 text-xs cursor-help
+                                                 border border-base-content/20 rounded-full
+                                                 px-1.5 py-0.5">?</span>
+                                </div>
+                                <p class="text-xs text-base-content/50 mt-0.5">
+                                    Prevents accidental cast interruptions when retargeting.
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="card-actions justify-end mt-6">
+                        <button type="submit" class="btn btn-primary">Save Preferences</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Account actions -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title text-lg mb-2">Account</h2>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{% url 'users:change-password' %}" class="btn btn-ghost btn-sm">
+                        Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

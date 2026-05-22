@@ -63,3 +63,14 @@ class UserCreationForm(forms.ModelForm):
         user = User.objects.create_user(email=email)
         return user
 
+
+from .models import UserPreferences
+
+
+class UserPreferencesForm(forms.ModelForm):
+    class Meta:
+        model = UserPreferences
+        fields = ('confirm_cast_cancel',)
+        widgets = {
+            'confirm_cast_cancel': forms.CheckboxInput(),
+        }

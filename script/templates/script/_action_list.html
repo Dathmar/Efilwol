@@ -1,0 +1,20 @@
+{% load script_tags %}
+{% if actions %}
+<div class="mt-2 space-y-1">
+    {% for action in actions %}
+    <div class="flex items-center justify-between text-xs bg-base-200 rounded px-2 py-1">
+        <span class="font-medium truncate">{{ action.name }}</span>
+        <div class="flex gap-2 shrink-0 ml-2">
+            <span class="badge badge-xs {{ action.type|type_color }}">{{ action.type }}</span>
+            <span class="text-base-content/50">
+                {% if action.is_instant %}Instant{% else %}{{ action.cast_time }}s{% endif %}
+            </span>
+            <span class="text-base-content/40">cd {{ action.cooldown }}s</span>
+            <span class="text-warning font-bold">{{ action.base_power }}pw</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-xs text-base-content/40 mt-2 italic">No actions assigned</p>
+{% endif %}

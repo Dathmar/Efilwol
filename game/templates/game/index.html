@@ -1,19 +1,105 @@
 {% extends 'base/base.html' %}
+{% load static %}
 {% block page_title %}Home{% endblock %}
 
 {% block content %}
-    {% if  not user.is_anonymous %}
-    <div class="container py-4">
-        <div class="row">
-            Welcome {{ user.email }},
-        </div>
-    </div>
-    {% else %}
-    <div class="container py-4">
-        <div class="row">
-            You are not logged in.  You should do that.
-        </div>
-    </div>
-    {% endif %}
+<div class="min-h-screen bg-gradient-to-br from-base-100 via-base-200 to-base-300">
+    <div class="container mx-auto px-4 py-12">
 
+        <!-- Hero -->
+        <div class="text-center mb-12">
+            <img src="{% static 'img/logo.png' %}" alt="Efilwol" class="mx-auto w-48 mb-6 drop-shadow-2xl">
+            <h1 class="text-5xl font-bold mb-3">
+                {% if user.is_authenticated %}
+                    Welcome back, <span class="text-primary">{{ user.email|truncatechars:24 }}</span>
+                {% else %}
+                    Welcome to <span class="text-primary">Efilwol</span>
+                {% endif %}
+            </h1>
+            <p class="text-lg text-base-content/70">
+                {% if user.is_authenticated %}
+                    Choose a stage and lead your party to victory.
+                {% else %}
+                    Try the demo — no account needed.
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Stage list -->
+        {% if stages %}
+        <div class="max-w-2xl mx-auto space-y-4">
+            {% for stage in stages %}
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body flex-row items-center gap-4 p-4">
+
+                    <!-- Order badge -->
+                    <div class="text-3xl font-black text-base-content/20 w-10 text-center shrink-0">
+                        {{ stage.order }}
+                    </div>
+
+                    <!-- Info -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h2 class="font-bold text-lg">{{ stage.name }}</h2>
+                            {% if stage.is_demo %}
+                                <span class="badge badge-accent badge-sm">Demo</span>
+                            {% endif %}
+                            {% if not stage.is_demo and not user.is_authenticated %}
+                                <span class="badge badge-warning badge-sm">Login required</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-sm text-base-content/60 mt-1">{{ stage.description }}</p>
+                        {% if not stage.is_demo %}
+                        <div class="flex gap-3 mt-2 text-xs text-base-content/50">
+                            <span>⚔️ {{ stage.enemy_count }} enemies</span>
+                            <span>✨ {{ stage.xp_reward }} XP</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action -->
+                    <div class="shrink-0">
+                        {% if stage.is_demo or user.is_authenticated %}
+                            <a href="{% url 'game:game_stage' stage.id %}"
+                               class="btn btn-primary btn-sm">
+                                Play
+                            </a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-ghost btn-sm">
+                                Login
+                            </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <!-- No stages yet -->
+        <div class="max-w-md mx-auto text-center">
+            <div class="alert alert-warning">
+                No stages found. Run:
+                <code class="ml-2 font-mono text-sm">python manage.py seed_stages</code>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Auth CTAs for anon users -->
+        {% if not user.is_authenticated %}
+        <div class="max-w-2xl mx-auto mt-10 card bg-base-200 shadow-xl">
+            <div class="card-body text-center">
+                <h3 class="card-title justify-center">Want to keep your progress?</h3>
+                <p class="text-base-content/70">Create a free account to earn XP, build your party, and unlock new stages.</p>
+                <div class="flex gap-3 justify-center mt-2">
+                    <a href="{% url 'users:signup' %}" class="btn btn-primary">Create Account</a>
+                    <a href="{% url 'login' %}" class="btn btn-ghost">Login</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
 {% endblock %}

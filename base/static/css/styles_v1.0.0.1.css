@@ -2,6 +2,10 @@ body {
   font-family: 'Open Sans' !important;
 }
 
+.progress-bar {
+    width: 0;
+}
+
 .cust-card-img {
     max-width: 15vh;
 }
@@ -10,10 +14,20 @@ body {
     border-color: #387128;
 }
 
+.casting {
+    color: #787878;
+}
+
 .accordion-button {
     background-color: #A6C9E0 !important;
     font-size: 40px;
     font-weight: 500;
+}
+
+#id_attack_log {
+    height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .bg-purple-200 {

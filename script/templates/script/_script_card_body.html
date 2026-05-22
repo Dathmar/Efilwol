@@ -1,0 +1,114 @@
+{% load script_tags %}
+{% comment %}
+Pass `script` (Script model instance) for bench cards,
+or flat vars from get_party_state() dict for party slots.
+show_diff=True + slot (party) or bench_id (bench) enables Alpine diff indicators.
+{% endcomment %}
+
+{% if script %}{% with s=script %}
+
+<div class="flex items-start justify-between gap-2 mb-2">
+    <span class="font-semibold text-sm leading-tight">{{ s.name }}</span>
+    <div class="flex flex-col items-end gap-1 shrink-0">
+        <span class="badge badge-sm {% if s.role == 'tank' %}badge-primary{% else %}badge-secondary{% endif %}">{{ s.get_role_display }}</span>
+        <span class="badge badge-sm badge-ghost">{{ s.get_damage_range_display }}</span>
+        <span class="badge badge-sm {{ s.damage_specialization|type_color }}">{{ s.get_damage_specialization_display }}</span>
+    </div>
+</div>
+
+<div class="grid grid-cols-3 gap-1 text-xs">
+
+    {% for stat, label, color in stat_cells %}{% endfor %}
+
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">HP</div>
+        <div class="font-bold text-success flex items-center justify-center gap-0.5">
+            {% if hp_override %}{{ hp_override }}{% else %}{{ s.hp }}{% endif %}{% if show_diff %}<span x-show="previewId === {{ bench_id }}" :class="diff('hp') > 0 ? 'text-success' : diff('hp') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('hp') > 0 ? '▲' : diff('hp') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">ATK</div>
+        <div class="font-bold text-error flex items-center justify-center gap-0.5">
+            {{ s.attack }}{% if show_diff %}<span x-show="previewId === {{ bench_id }}" :class="diff('attack') > 0 ? 'text-success' : diff('attack') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('attack') > 0 ? '▲' : diff('attack') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">DEF</div>
+        <div class="font-bold text-info flex items-center justify-center gap-0.5">
+            {{ s.defence }}{% if show_diff %}<span x-show="previewId === {{ bench_id }}" :class="diff('defence') > 0 ? 'text-success' : diff('defence') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('defence') > 0 ? '▲' : diff('defence') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">SPD</div>
+        <div class="font-bold flex items-center justify-center gap-0.5">
+            {{ s.speed }}{% if show_diff %}<span x-show="previewId === {{ bench_id }}" :class="diff('speed') > 0 ? 'text-success' : diff('speed') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('speed') > 0 ? '▲' : diff('speed') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">RES</div>
+        <div class="font-bold flex items-center justify-center gap-0.5">
+            {{ s.resistance }}{% if show_diff %}<span x-show="previewId === {{ bench_id }}" :class="diff('resistance') > 0 ? 'text-success' : diff('resistance') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('resistance') > 0 ? '▲' : diff('resistance') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">LCK</div>
+        <div class="font-bold text-warning flex items-center justify-center gap-0.5">
+            {{ s.luck }}{% if show_diff %}<span x-show="previewId === {{ bench_id }}" :class="diff('luck') > 0 ? 'text-success' : diff('luck') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('luck') > 0 ? '▲' : diff('luck') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endwith %}{% else %}
+
+<div class="flex items-start justify-between gap-2 mb-2">
+    <span class="font-semibold text-sm leading-tight">{{ name }}</span>
+    <div class="flex flex-col items-end gap-1 shrink-0">
+        <span class="badge badge-sm {% if role == 'tank' %}badge-primary{% else %}badge-secondary{% endif %}">{{ role_display }}</span>
+        <span class="badge badge-sm badge-ghost">{{ damage_range_display }}</span>
+        <span class="badge badge-sm {{ damage_specialization|type_color }}">{{ damage_specialization_display }}</span>
+    </div>
+</div>
+
+<div class="grid grid-cols-3 gap-1 text-xs">
+
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">HP</div>
+        <div class="font-bold text-success flex items-center justify-center gap-0.5">
+            {{ hp }}{% if show_diff %}<span x-show="selectedSlot === {{ slot }} && previewId" :class="diff('hp') > 0 ? 'text-success' : diff('hp') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('hp') > 0 ? '▲' : diff('hp') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">ATK</div>
+        <div class="font-bold text-error flex items-center justify-center gap-0.5">
+            {{ attack }}{% if show_diff %}<span x-show="selectedSlot === {{ slot }} && previewId" :class="diff('attack') > 0 ? 'text-success' : diff('attack') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('attack') > 0 ? '▲' : diff('attack') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">DEF</div>
+        <div class="font-bold text-info flex items-center justify-center gap-0.5">
+            {{ defence }}{% if show_diff %}<span x-show="selectedSlot === {{ slot }} && previewId" :class="diff('defence') > 0 ? 'text-success' : diff('defence') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('defence') > 0 ? '▲' : diff('defence') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">SPD</div>
+        <div class="font-bold flex items-center justify-center gap-0.5">
+            {{ speed }}{% if show_diff %}<span x-show="selectedSlot === {{ slot }} && previewId" :class="diff('speed') > 0 ? 'text-success' : diff('speed') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('speed') > 0 ? '▲' : diff('speed') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">RES</div>
+        <div class="font-bold flex items-center justify-center gap-0.5">
+            {{ resistance }}{% if show_diff %}<span x-show="selectedSlot === {{ slot }} && previewId" :class="diff('resistance') > 0 ? 'text-success' : diff('resistance') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('resistance') > 0 ? '▲' : diff('resistance') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+    <div class="bg-base-200 rounded p-1 text-center">
+        <div class="text-base-content/40" style="font-size:0.55rem">LCK</div>
+        <div class="font-bold text-warning flex items-center justify-center gap-0.5">
+            {{ luck }}{% if show_diff %}<span x-show="selectedSlot === {{ slot }} && previewId" :class="diff('luck') > 0 ? 'text-success' : diff('luck') < 0 ? 'text-error' : 'text-base-content/50'" x-text="diff('luck') > 0 ? '▲' : diff('luck') < 0 ? '▼' : '='" class="text-xs leading-none"></span>{% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endif %}

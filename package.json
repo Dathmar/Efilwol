@@ -1,0 +1,16 @@
+{
+  "name": "efilwol",
+  "version": "1.0.0",
+  "description": "Efilwol Game - Modern Frontend Stack",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./base/static/css/input.css -o ./base/static/css/output.css --watch",
+    "build": "npx tailwindcss -i ./base/static/css/input.css -o ./base/static/css/output.css --minify"
+  },
+  "keywords": ["game", "django", "tailwind", "htmx", "alpine"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1",
+    "daisyui": "^4.6.0"
+  }
+}

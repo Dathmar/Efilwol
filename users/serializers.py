@@ -1,12 +1,15 @@
 from rest_framework import serializers
-from .models import Script, Spell
+from .models import UserScript
 
-class ScriptSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Script
-        fields = ('id', 'name', 'description', 'role', 'damage_range', 'damage_specialization', 'health')
+class UserScriptSerializer(serializers.ModelSerializer):
+    script_id = serializers.IntegerField(source='script.id', read_only=True)
+    script_name = serializers.CharField(source='script.name', read_only=True)
+    action_ids = serializers.SerializerMethodField()
 
-class SpellSerializer(serializers.ModelSerializer):
+    def get_action_ids(self, instance):
+        return list(instance.actions.values_list('id', flat=True))
+
     class Meta:
-        model = Spell
-        fields = ('id', 'name', 'description', 'modifier', 'type', 'mana_cost', 'cooldown', 'duration', 'scope', 'attribute_modified')
+        model = UserScript
+        fields = ('id', 'script', 'script_id', 'script_name', 'in_party', 'hp', 'mana', 'action_ids')
+

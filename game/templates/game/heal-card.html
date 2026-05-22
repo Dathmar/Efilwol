@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load static %}
+<button class="btn btn-primary gap-2 heal-btn"
+        x-data="{
+            isCasting: false,
+            isDisabled: false,
+            healName: '{{ heal.name }}',
+            get buttonText() { return this.isCasting ? 'Casting...' : this.healName; },
+            handleClick() {
+                this.$dispatch('heal-cast', { button: this.$el, name: this.healName });
+            },
+            startCasting() { this.isCasting = true; this.isDisabled = true; },
+            stopCasting()  { this.isCasting = false; this.isDisabled = false; }
+        }"
+        :class="{ 'btn-disabled': isDisabled }"
+        :disabled="isDisabled"
+        @click="handleClick"
+        min_heal="{{ heal.min }}"
+        max_heal="{{ heal.max }}"
+        cast_time="{{ heal.cast_time }}"
+        id="{{ heal.name|slugify }}">
 
-</body>
-</html>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    <span x-text="buttonText"></span>
+    <span x-show="isCasting" class="loading loading-spinner loading-sm"></span>
+</button>

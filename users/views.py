@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
-from .forms import EmailForm, PasswordResetForm, NewPasswordChangeForm, UserCreationForm
+from .forms import EmailForm, PasswordResetForm, NewPasswordChangeForm, UserCreationForm, UserPreferencesForm
 from .models import User
 
 import logging
@@ -103,3 +104,18 @@ def give_me_script(request):
         user.add_random_script()
 
     return redirect(reverse('game:index'))
+
+
+@login_required
+def profile(request):
+    prefs = request.user.preferences
+    if request.method == 'POST':
+        form = UserPreferencesForm(request.POST, instance=prefs)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Preferences saved.')
+            return redirect('users:profile')
+    else:
+        form = UserPreferencesForm(instance=prefs)
+
+    return render(request, 'users/profile.html', {'form': form, 'prefs': prefs})
