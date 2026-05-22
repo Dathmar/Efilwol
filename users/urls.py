@@ -13,6 +13,7 @@ urlpatterns = [
     path('signup/complete', views.signup_complete, name='signup-complete'),
     path('give-me-script/', views.give_me_script, name='give-me-script'),
     path('profile/', views.profile, name='profile'),
+    path('suggestions/', views.submit_suggestion, name='submit-suggestion'),
     #path('user/create/', views.create_user, name='create-user'),
     #path('user/edit/<int:pk>/', views.edit_user, name='edit-user'),
 ]

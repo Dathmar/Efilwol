@@ -165,3 +165,24 @@ class UserScript(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.script.name}"
+
+
+class Suggestion(models.Model):
+    class Category(models.TextChoices):
+        GAMEPLAY = 'gameplay', 'Gameplay'
+        UI = 'ui', 'UI / Design'
+        BUG = 'bug', 'Bug Report'
+        CONTENT = 'content', 'Content'
+        OTHER = 'other', 'Other'
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='suggestions')
+    category = models.CharField(max_length=20, choices=Category.choices, default=Category.OTHER)
+    title = models.CharField(max_length=200)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'[{self.get_category_display()}] {self.title} — {self.user.email}'

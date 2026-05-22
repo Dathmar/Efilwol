@@ -1,0 +1,87 @@
+{% extends 'base/base.html' %}
+{% block page_title %}Submit a Suggestion{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-start justify-center pt-16 px-4">
+    <div class="w-full max-w-lg space-y-6">
+
+        <!-- Header -->
+        <div>
+            <h1 class="text-3xl font-bold">Submit a Suggestion</h1>
+            <p class="text-base-content/60 mt-1">
+                Got an idea to improve the game? We'd love to hear it.
+            </p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body space-y-4">
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Category -->
+                    <div class="form-control">
+                        <label class="label" for="{{ form.category.id_for_label }}">
+                            <span class="label-text font-medium">Category</span>
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.category.errors|join:", " }}</span>
+                            </label>
+                        {% endif %}
+                    </div>
+
+                    <!-- Title -->
+                    <div class="form-control">
+                        <label class="label" for="{{ form.title.id_for_label }}">
+                            <span class="label-text font-medium">Title</span>
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.title.errors|join:", " }}</span>
+                            </label>
+                        {% endif %}
+                    </div>
+
+                    <!-- Body -->
+                    <div class="form-control">
+                        <label class="label" for="{{ form.body.id_for_label }}">
+                            <span class="label-text font-medium">Details</span>
+                        </label>
+                        {{ form.body }}
+                        {% if form.body.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.body.errors|join:", " }}</span>
+                            </label>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-actions justify-end pt-2">
+                        <button type="submit" class="btn btn-primary gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                            Submit Suggestion
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .forms import EmailForm, PasswordResetForm, NewPasswordChangeForm, UserCreationForm, UserPreferencesForm
+from .forms import EmailForm, PasswordResetForm, NewPasswordChangeForm, UserCreationForm, UserPreferencesForm, SuggestionForm
 from .models import User
 
 import logging
@@ -119,3 +119,19 @@ def profile(request):
         form = UserPreferencesForm(instance=prefs)
 
     return render(request, 'users/profile.html', {'form': form, 'prefs': prefs})
+
+
+@login_required
+def submit_suggestion(request):
+    if request.method == 'POST':
+        form = SuggestionForm(request.POST)
+        if form.is_valid():
+            suggestion = form.save(commit=False)
+            suggestion.user = request.user
+            suggestion.save()
+            messages.success(request, 'Thanks for your suggestion!')
+            return redirect('users:submit-suggestion')
+    else:
+        form = SuggestionForm()
+
+    return render(request, 'users/suggestion.html', {'form': form})
