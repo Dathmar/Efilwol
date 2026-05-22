@@ -3,7 +3,7 @@
      x-data="{
          scriptType: '{{ type }}',
          scriptName: '{{ script_obj.name }}',
-         scriptId: {{ script_obj.id }},
+         scriptId: {{ card_id|default:script_obj.id }},
          currentHealth: {{ hp }},
          maxHealth: {{ hp }},
          attackProgress: 0,
@@ -32,7 +32,7 @@
      }"
      script_type="{{ type }}"
      script_name="{{ script_obj.name }}"
-     script_id="{{ script_obj.id }}">
+     script_id="{{ card_id|default:script_obj.id }}">
 
     <div class="bg-base-200 rounded-lg p-2 transition-all duration-200
                 [.heal-selected_&]:bg-success/20 [.heal-selected_&]:ring-2 [.heal-selected_&]:ring-success">

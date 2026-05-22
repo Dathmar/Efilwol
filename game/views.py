@@ -69,7 +69,7 @@ def game(request, stage_id=None):
         serialized_party = UserScriptSerializer(party_scripts, many=True)
         party_session = [
             {
-                'id': p['script_id'],
+                'id': p['id'],           # UserScript PK — unique per slot
                 'script_id': p['script_id'],
                 'name': p['script_name'],
                 'hp': p['hp'],

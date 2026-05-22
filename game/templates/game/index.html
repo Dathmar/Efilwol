@@ -8,7 +8,7 @@
 
         <!-- Hero -->
         <div class="text-center mb-12">
-            <img src="{% static 'img/logo-md.png' %}" alt="Efilwol" class="mx-auto w-48 mb-6 drop-shadow-2xl">
+            <img src="{% static 'img/logo-lg.png' %}" alt="Efilwol" class="mx-auto w-64 mb-6 drop-shadow-2xl">
             <h1 class="text-5xl font-bold mb-3">
                 {% if user.is_authenticated %}
                     Welcome back, <span class="text-primary">{{ user.email|truncatechars:24 }}</span>

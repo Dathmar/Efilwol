@@ -52,7 +52,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {% include 'game/script-card.html' with script_obj=lowlife hp=lowlife.hp type='lowlife' %}
                     {% for party_script in party_scripts %}
-                        {% include 'game/script-card.html' with script_obj=party_script.script hp=party_script.hp type='player' %}
+                        {% include 'game/script-card.html' with script_obj=party_script.script hp=party_script.hp type='player' card_id=party_script.id %}
                     {% endfor %}
                 </div>
             </div>
