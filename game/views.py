@@ -101,7 +101,8 @@ def game(request, stage_id=None):
                 'speed': float(s.speed),
                 'luck': float(s.luck),
                 'damage_specialization': s.damage_specialization,
-                'action_ids': [],
+                # Use pool entries directly — demo scripts have no UserScript
+                'action_ids': list(s.pool_entries.values_list('action_id', flat=True)[:6]),
             }
             for s in demo_scripts
         ]

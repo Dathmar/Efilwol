@@ -52,11 +52,25 @@ class Stage(models.Model):
         return f'Stage {self.order}: {self.name}{tag}'
 
     def get_enemies(self):
-        """Return a list of randomly selected enemies from the pool."""
+        """Return a list of randomly selected enemies from the pool.
+
+        For demo stages, enemies are drawn from the weakest half of the pool
+        (sorted by attack) to keep the difficulty accessible for new players.
+        No replacement — the same enemy cannot appear twice.
+        """
         import random
         pool = list(self.enemy_pool.all())
+        if not pool:
+            return []
+
+        if self.is_demo:
+            # Sort by attack ascending, take the weakest 50% as candidates
+            pool.sort(key=lambda npc: float(npc.attack))
+            cutoff = max(self.enemy_count, len(pool) // 2)
+            pool = pool[:cutoff]
+
         count = min(self.enemy_count, len(pool))
-        return random.choices(pool, k=count) if pool else []
+        return random.sample(pool, k=count)
 
     def get_demo_party(self):
         """Return party_size randomly selected scripts for anon players."""

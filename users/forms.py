@@ -7,8 +7,10 @@ from .models import User, UserPreferences, Suggestion
 class EmailForm(forms.Form):
     email_address = forms.EmailField(
         widget=forms.TextInput(attrs={
-            'class': 'input input-bordered w-full',
-            'placeholder': 'Email address',
+            'class': 'input input-bordered w-full pl-10',
+            'placeholder': 'your.email@example.com',
+            'autocomplete': 'email',
+            'autocapitalize': 'none',
         }),
         label='Email address',
         required=True,

@@ -33,4 +33,4 @@ class SuggestionAdmin(admin.ModelAdmin):
     list_filter   = ('category',)
     search_fields = ('title', 'body', 'user__email')
     readonly_fields = ('user', 'created_at')
-    ordering = ('-created_at')
+    ordering = ('-created_at',)
