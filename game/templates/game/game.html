@@ -50,10 +50,8 @@
                     <div class="badge badge-success badge-lg" x-text="`${aliveParty} alive`"></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {% include 'game/script-card.html' with script_obj=lowlife hp=lowlife.hp type='lowlife' %}
                     {% for party_script in party_scripts %}
-                        {% if forloop.counter0 == 4 %}
-                            {% include 'game/script-card.html' with script_obj=lowlife hp=lowlife.hp type='lowlife' %}
-                        {% endif %}
                         {% include 'game/script-card.html' with script_obj=party_script.script hp=party_script.hp type='player' %}
                     {% endfor %}
                 </div>
