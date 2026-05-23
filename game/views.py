@@ -65,7 +65,7 @@ def game(request, stage_id=None):
         UserScript = apps.get_model('users', 'UserScript')
         party_scripts = UserScript.objects.filter(
             user=request.user, in_party=True
-        ).select_related('script')[:stage.party_size]
+        ).select_related('script').order_by('party_slot')[:stage.party_size]
         serialized_party = UserScriptSerializer(party_scripts, many=True)
         party_session = [
             {

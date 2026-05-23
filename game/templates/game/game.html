@@ -49,12 +49,27 @@
                     <h2 class="text-3xl font-bold text-success">Your Party</h2>
                     <div class="badge badge-success badge-lg" x-text="`${aliveParty} alive`"></div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {% include 'game/script-card.html' with script_obj=lowlife hp=lowlife.hp type='lowlife' %}
-                    {% for party_script in party_scripts %}
-                        {% include 'game/script-card.html' with script_obj=party_script.script hp=party_script.hp type='player' card_id=party_script.id %}
+                {# Fixed 2-row layout: melee top (slots 1-3), ranged bottom (slot4, Efilwol, slot5) #}
+                {# party_scripts is ordered by party_slot ascending #}
+                {% with melee=party_scripts|slice:":3" ranged=party_scripts|slice:"3:" %}
+                <div class="grid grid-cols-3 gap-4">
+                    {# Row 1: melee slots 1-3 #}
+                    {% for ps in melee %}
+                        {% include 'game/script-card.html' with script_obj=ps.script hp=ps.hp type='player' card_id=ps.id %}
+                    {% endfor %}
+                    {# Row 2: ranged slot 4, Efilwol (center), ranged slot 5 #}
+                    {% for ps in ranged %}
+                        {% if forloop.first %}
+                            {% include 'game/script-card.html' with script_obj=ps.script hp=ps.hp type='player' card_id=ps.id %}
+                            {% include 'game/script-card.html' with script_obj=lowlife hp=lowlife.hp type='lowlife' %}
+                        {% else %}
+                            {% include 'game/script-card.html' with script_obj=ps.script hp=ps.hp type='player' card_id=ps.id %}
+                        {% endif %}
+                    {% empty %}
+                        {% include 'game/script-card.html' with script_obj=lowlife hp=lowlife.hp type='lowlife' %}
                     {% endfor %}
                 </div>
+                {% endwith %}
             </div>
             
             <!-- Heal Buttons -->
