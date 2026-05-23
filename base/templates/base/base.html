@@ -42,11 +42,14 @@
     {% block extra_header %}{% endblock %}
 </head>
 
-<body class="bg-base-100 text-base-content overflow-x-hidden">
+<body class="bg-base-100 text-base-content overflow-x-hidden"
+      x-data="{ sidebarOpen: true }"
+      @keydown.escape.window="sidebarOpen = false">
 
     {% include 'base/navbar.html' %}
     {% timezone "US/Central" %}
-    <main class="min-h-screen">
+    <main class="min-h-screen transition-all duration-200"
+          :class="sidebarOpen ? 'ml-56' : 'ml-14'">
         {% block content %}{% endblock %}
     </main>
     {% endtimezone %}

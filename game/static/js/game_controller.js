@@ -12,6 +12,7 @@ document.addEventListener('alpine:init', () => {
         startTime: Date.now(),
         _cards: {},
         _expectedTotal: 0,
+        _battleAborted: false,  // set true on victory/defeat to stop all in-flight attacks
         // The element that was selected when the cast started — never changes mid-cast
         _castTargetEl: null,
 
@@ -55,7 +56,9 @@ document.addEventListener('alpine:init', () => {
         },
 
         _endBattle() {
-            // Kill any in-flight cast immediately
+            // Signal all in-flight attack animations to stop
+            this._battleAborted = true;
+            // Kill any in-flight heal cast immediately
             if (this.currentHeal) {
                 this.currentHealToken++;
                 Alpine.$data(this.currentHeal).stopCasting();
@@ -169,7 +172,11 @@ document.addEventListener('alpine:init', () => {
                     return;
                 }
 
-                await this.animateAttack(sourceEl, cast_time, cool_down);
+                // Abort if battle ended or target already dead before animation starts
+                if (this._battleAborted || tgt.isDead) return;
+
+                const aborted = await this.animateAttack(sourceEl, targetEl, cast_time, cool_down);
+                if (aborted) return;
 
                 if (tgt.isDead) {
                     this.addLog(`${srcName} attacked ${tgtName} who died during the attack!`);
@@ -192,15 +199,22 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        async animateAttack(el, castTime, coolDown) {
+        // Returns true if the animation was aborted (target died or battle ended)
+        async animateAttack(sourceEl, targetEl, castTime, coolDown) {
             const steps = 50;
             const step  = (castTime + coolDown) / steps;
-            const d     = this._data(el);
+            const src   = this._data(sourceEl);
+            const tgt   = this._data(targetEl);
             for (let i = 0; i <= steps; i++) {
-                d.setAttackProgress((i / steps) * 100);
+                if (this._battleAborted || tgt.isDead) {
+                    src.setAttackProgress(0);
+                    return true;  // aborted
+                }
+                src.setAttackProgress((i / steps) * 100);
                 await this.sleep(step);
             }
-            d.setAttackProgress(0);
+            src.setAttackProgress(0);
+            return false;  // completed normally
         },
 
         // ----------------------------------------------------------------
