@@ -25,6 +25,78 @@
             </p>
         </div>
 
+        <!-- About the game (anon only) -->
+        {% if not user.is_authenticated %}
+        <div class="max-w-3xl mx-auto mb-12 space-y-6">
+
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-2">What is Efilwol?</h2>
+                    <p class="text-base-content/80 leading-relaxed">
+                        Efilwol is a browser-based tactical RPG and a spiritual successor to
+                        <span class="text-primary font-semibold">Lowlife</span>, the beloved iOS game.
+                        If you spent hours building parties, grinding stages, and obsessing over elemental
+                        matchups in Lowlife — you're in the right place.
+                    </p>
+                    <p class="text-base-content/70 leading-relaxed mt-2">
+                        The name? <em>Efilwol</em> is <em>Lowlife</em> spelled backwards. A small nod to
+                        where it all started.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="card bg-base-200 shadow">
+                    <div class="card-body p-4">
+                        <div class="text-3xl mb-2">⚔️</div>
+                        <h3 class="font-bold mb-1">Build Your Party</h3>
+                        <p class="text-sm text-base-content/60">
+                            Assemble up to 5 scripts — melee fighters in the front row, ranged attackers
+                            in the back. Each script has unique stats, elemental typing, and a set of
+                            6 actions drawn from its pool.
+                        </p>
+                    </div>
+                </div>
+                <div class="card bg-base-200 shadow">
+                    <div class="card-body p-4">
+                        <div class="text-3xl mb-2">🔥</div>
+                        <h3 class="font-bold mb-1">Elemental Combat</h3>
+                        <p class="text-sm text-base-content/60">
+                            New to Efilwol — every action has an elemental type and every defender
+                            has a specialization. Fire melts ice. Lightning shreds water. Holy smites dark.
+                            Land the right matchup for a 2× damage bonus, or face a glancing blow.
+                            A layer of strategy the original Lowlife never had.
+                        </p>
+                    </div>
+                </div>
+                <div class="card bg-base-200 shadow">
+                    <div class="card-body p-4">
+                        <div class="text-3xl mb-2">👁️</div>
+                        <h3 class="font-bold mb-1">Efilwol the Healer</h3>
+                        <p class="text-sm text-base-content/60">
+                            Efilwol is the mysterious healer at the heart of your party. While your
+                            scripts fight on the front and back lines, Efilwol keeps them alive —
+                            casting heals between battles and turning the tide when things get desperate.
+                            Guard them well.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-xl mb-2">Early Access</h2>
+                    <p class="text-base-content/70 leading-relaxed">
+                        Efilwol is actively in development. New stages, scripts, actions, and mechanics
+                        are being added regularly. Create a free account to save your progress, earn XP,
+                        and help shape the game — feedback and suggestions are always welcome.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+
         <!-- Stage list -->
         {% if stages %}
         <div class="max-w-2xl mx-auto space-y-4">
@@ -90,8 +162,10 @@
         {% if not user.is_authenticated %}
         <div class="max-w-2xl mx-auto mt-10 card bg-base-200 shadow-xl">
             <div class="card-body text-center">
-                <h3 class="card-title justify-center">Want to keep your progress?</h3>
-                <p class="text-base-content/70">Create a free account to earn XP, build your party, and unlock new stages.</p>
+                <h3 class="card-title justify-center">Ready to save your progress?</h3>
+                <p class="text-base-content/70">
+                    Create a free account to earn XP, build a permanent party, and unlock new stages as they're added.
+                </p>
                 <div class="flex gap-3 justify-center mt-2">
                     <a href="{% url 'users:signup' %}" class="btn btn-primary">Create Account</a>
                     <a href="{% url 'login' %}" class="btn btn-ghost">Login</a>
